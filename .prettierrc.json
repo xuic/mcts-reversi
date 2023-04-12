@@ -42,6 +42,42 @@
       "options": {
         "parser": "typescript"
       }
+    },
+    {
+      "files": [
+        "*.json",
+        ".babelrc"
+      ],
+      "options": {
+        "parser": "json-stringify"
+      }
+    },
+    {
+      "files": [
+        "*.jsonc",
+        "tsconfig*.json"
+      ],
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": [
+        "*.js",
+        "*.cjs",
+        "*.mjs"
+      ],
+      "options": {
+        "parser": "babel"
+      }
+    },
+    {
+      "files": [
+        "*.ts"
+      ],
+      "options": {
+        "parser": "typescript"
+      }
     }
   ]
 }
