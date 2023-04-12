@@ -1,17 +1,23 @@
 <div class="board">
   <ng-container *ngFor="let row of board.boardState; let r = index">
-    <div class="row">
-      <ng-container *ngFor="let piece of row; let c = index">
-        <div
-          class="cell"
-          [ngClass]="{
-            'cell-player1': piece === 1,
-            'cell-player2': piece === 2,
-            'cell-dark': (r - c) % 2,
-            'cell-light': (r - c + 1) % 2
-          }"
-        ></div>
-      </ng-container>
-    </div>
+    <ng-container *ngIf="r !== 0 && r !== 9">
+      <div class="row">
+        <ng-container *ngFor="let piece of row; let c = index">
+          <ng-container *ngIf="c !== 0 && c !== 9">
+            <div
+              class="cell"
+              [ngClass]="{
+                'cell-player1': piece === 1,
+                'cell-player2': piece === 2,
+                'cell-placeable': piece === 3,
+                'cell-dark': (r - c) % 2,
+                'cell-light': (r - c + 1) % 2
+              }"
+              (click)="place($event, r, c)"
+            ></div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </ng-container>
   </ng-container>
 </div>

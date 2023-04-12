@@ -3,6 +3,7 @@ $cell-dark: #7a9db2;
 $cell-light: #c5d5dc;
 $piece-1: var(--color-black);
 $piece-2: var(--color-white);
+$pieceable: rgba(255, 170, 0);
 .board {
   width: calc($cell-size * 8);
   height: calc($cell-size * 8);
@@ -31,7 +32,7 @@ $piece-2: var(--color-white);
     }
 
     .cell-player1 {
-      &::before {
+      &::after {
         content: '';
         width: 90%;
         height: 90%;
@@ -42,13 +43,32 @@ $piece-2: var(--color-white);
     }
 
     .cell-player2 {
-      &::before {
+      &::after {
         content: '';
         width: 90%;
         height: 90%;
         border-radius: 50%;
         position: absolute;
         background-color: $piece-2;
+      }
+    }
+
+    .cell-placeable {
+      &::before,
+      &::after {
+        position: absolute;
+        content: '';
+        width: 50%;
+        height: 4px;
+        background-color: $pieceable;
+      }
+
+      &::before {
+        transform: rotate(45deg);
+      }
+
+      &::after {
+        transform: rotate(-45deg);
       }
     }
   }
