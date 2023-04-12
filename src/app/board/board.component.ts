@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Board, BoardService } from '../service/board.service';
+import { BoardState, BoardService, Coordinate } from '../service/board.service';
 
 @Component({
   selector: 'app-board',
@@ -9,16 +9,15 @@ import { Board, BoardService } from '../service/board.service';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent implements OnInit {
-  board!: Board;
+export class BoardComponent {
+  @Input() boardState!: BoardState;
+  @Output() place = new EventEmitter<Coordinate>();
   constructor(private boardService: BoardService) {}
 
-  place(e: MouseEvent, r: number, c: number): void {
+  onPlace(e: MouseEvent, r: number, c: number): void {
     e.stopPropagation();
-    this.board = this.boardService.place(this.board, r, c);
-  }
-
-  ngOnInit(): void {
-    this.board = this.boardService.init();
+    if (this.boardState.placeable[r][c]) {
+      this.place.emit({ row: r, column: c });
+    }
   }
 }

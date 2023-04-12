@@ -1,4 +1,4 @@
-$cell-size: 50px;
+$cell-size: 80px;
 $cell-dark: #7a9db2;
 $cell-light: #c5d5dc;
 $piece-1: var(--color-black);
@@ -31,24 +31,25 @@ $pieceable: rgba(255, 170, 0);
       background-color: $cell-light;
     }
 
-    .cell-player1 {
+    .cell-player1,
+    .cell-player2 {
       &::after {
         content: '';
-        width: 90%;
-        height: 90%;
+        width: 80%;
+        height: 80%;
         border-radius: 50%;
         position: absolute;
+      }
+    }
+
+    .cell-player1 {
+      &::after {
         background-color: $piece-1;
       }
     }
 
     .cell-player2 {
       &::after {
-        content: '';
-        width: 90%;
-        height: 90%;
-        border-radius: 50%;
-        position: absolute;
         background-color: $piece-2;
       }
     }

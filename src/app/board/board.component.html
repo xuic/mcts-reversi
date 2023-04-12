@@ -1,5 +1,5 @@
-<div class="board">
-  <ng-container *ngFor="let row of board.boardState; let r = index">
+<div class="board" (contextmenu)="$event.preventDefault()">
+  <ng-container *ngFor="let row of boardState.board; let r = index">
     <ng-container *ngIf="r !== 0 && r !== 9">
       <div class="row">
         <ng-container *ngFor="let piece of row; let c = index">
@@ -9,11 +9,11 @@
               [ngClass]="{
                 'cell-player1': piece === 1,
                 'cell-player2': piece === 2,
-                'cell-placeable': piece === 3,
+                'cell-placeable': boardState.placeable[r][c],
                 'cell-dark': (r - c) % 2,
                 'cell-light': (r - c + 1) % 2
               }"
-              (click)="place($event, r, c)"
+              (click)="onPlace($event, r, c)"
             ></div>
           </ng-container>
         </ng-container>

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-type BoardState = number[][];
-export interface Board {
-  boardState: BoardState;
-  currentPlayer: number;
-  history: string[];
+export interface BoardState {
+  board: number[][];
+  placeable: number[][];
 }
 
+export type Coordinate = { row: number; column: number };
+export type Label = `${'a|b|c|d|e|f|g|h'}${number}` | '--';
 @Injectable({
   providedIn: 'root',
 })
@@ -22,8 +22,8 @@ export class BoardService {
     [1, 1],
   ];
 
-  init(): Board {
-    let boardState: BoardState = Array.from({ length: 10 }).map((_, r) =>
+  init(): BoardState {
+    const board: number[][] = Array.from({ length: 10 }).map((_, r) =>
       Array.from({ length: 10 }).map((_, c) => {
         if (r === 0 || r === 9 || c === 0 || c === 9) return -1;
         if ((r === 4 && c === 5) || (r === 5 && c === 4)) return 1;
@@ -32,88 +32,65 @@ export class BoardService {
       })
     );
 
-    boardState = this._updatePlaceableCell(boardState, 1);
+    const { placeable } = this.updatePlaceble(board, 1);
 
     return {
-      boardState,
-      currentPlayer: 1,
-      history: [],
+      board,
+      placeable,
     };
   }
 
-  place(board: Board, row: number, column: number): Board {
-    if (board.boardState[row][column] !== 3) return board;
-    board.history.push(this._coordinateToLabel(row, column));
-    board.boardState[row][column] = board.currentPlayer;
-    board.boardState = this._flip(board.boardState, row, column);
-    board.currentPlayer = this._changePlayer(board.currentPlayer);
-    board.boardState = this._updatePlaceableCell(board.boardState, board.currentPlayer);
-    return board;
-  }
-
-  private _flip(boardState: BoardState, row: number, column: number): BoardState {
-    const currentPlayer = boardState[row][column];
+  place(board: number[][], positoin: Coordinate, currentPlayer: number): number[][] {
+    const { row, column } = positoin;
+    board[row][column] = currentPlayer;
     for (const [dr, dc] of this.DIRECTION) {
       let cr = row + dr;
       let cc = column + dc;
-      if (boardState[cr][cc] !== 3 - currentPlayer) continue;
+      if (board[cr][cc] !== 3 - currentPlayer) continue;
       const candidate = [];
-      while (boardState[cr][cc] === 3 - currentPlayer) {
+      while (board[cr][cc] === 3 - currentPlayer) {
         candidate.push([cr, cc]);
         cr += dr;
         cc += dc;
       }
-      if (boardState[cr][cc] === currentPlayer) {
+      if (board[cr][cc] === currentPlayer) {
         for (const [r, c] of candidate) {
-          boardState[r][c] = currentPlayer;
+          board[r][c] = currentPlayer;
         }
       }
     }
-    return boardState;
+    return board;
   }
 
-  private _changePlayer(currentPlayer: number): number {
-    return 3 - currentPlayer;
-  }
-
-  private _findPlacebleCell(boardState: BoardState, currentPlayer: number): number[][] {
-    const candidate = [];
+  updatePlaceble(
+    board: number[][],
+    currentPlayer: number
+  ): { placeable: number[][]; canMove: boolean } {
+    const placeable: number[][] = Array.from({ length: 10 }).map((_) =>
+      Array.from({ length: 10 }).map((_) => 0)
+    );
+    let canMove = false;
     for (let r = 1; r < 9; r++) {
       for (let c = 1; c < 9; c++) {
-        if (boardState[r][c] !== 0) continue;
+        if (board[r][c] !== 0) continue;
         for (const [dr, dc] of this.DIRECTION) {
           let cr = r + dr;
           let cc = c + dc;
-          if (boardState[cr][cc] !== 3 - currentPlayer) continue;
-          while (boardState[cr][cc] === 3 - currentPlayer) {
+          if (board[cr][cc] !== 3 - currentPlayer) continue;
+          while (board[cr][cc] === 3 - currentPlayer) {
             cr += dr;
             cc += dc;
           }
-          if (boardState[cr][cc] === currentPlayer) {
-            candidate.push([r, c]);
+          if (board[cr][cc] === currentPlayer) {
+            placeable[r][c] = 1;
+            canMove = true;
           }
         }
       }
     }
-    return candidate;
-  }
-
-  private _updatePlaceableCell(boardState: BoardState, currentPlayer: number): BoardState {
-    const candidate = this._findPlacebleCell(boardState, currentPlayer);
-    for (let r = 1; r < 9; r++) {
-      for (let c = 1; c < 9; c++) {
-        if (boardState[r][c] === 3) {
-          boardState[r][c] = 0;
-        }
-      }
-    }
-    for (const [r, c] of candidate) {
-      boardState[r][c] = 3;
-    }
-    return boardState;
-  }
-
-  private _coordinateToLabel(row: number, column: number) {
-    return `${'abcdefgh'[row]}${column + 1}`;
+    return {
+      placeable,
+      canMove,
+    };
   }
 }

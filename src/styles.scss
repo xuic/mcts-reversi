@@ -129,4 +129,15 @@ table {
   position: relative;
 }
 
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-black);
+  font-family: 'Roboto Mono', monospace;
+}
+
 @import 'styles/variable.scss';

@@ -1,0 +1,8 @@
+<div class="container">
+  <ng-container *ngFor="let step of history; let i = index">
+    <div>
+      <ng-container *ngIf="(i + 1) % 2; else player2"> {{ i + 1 }}.{{ step }} </ng-container>
+      <ng-template #player2>{{ i + 1 }}.{{ step }}</ng-template>
+    </div>
+  </ng-container>
+</div>

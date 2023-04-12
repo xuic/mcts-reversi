@@ -1,0 +1,9 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 30px;
+  color: var(--color-white);
+  overflow-y: auto;
+}
